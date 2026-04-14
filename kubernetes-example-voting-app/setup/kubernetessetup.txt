@@ -1,0 +1,84 @@
+https://k21academy.com/docker-kubernetes/three-node-kubernetes-cluster/
+
+Kubernetes Setup Using Kubeadm In AWS EC2 Ubuntu Servers Container-D As Runtime
+=======
+
+Prerequisite:
+=============
+
+2 - Ubuntu Serves  > 20.04
+
+1 - Master  (4GB RAM , 2 Core) t2.medium
+
+1 - agent  (4GB RAM , 2 Core) t2.medium
+
+https://k21academy.com/docker-kubernetes/three-node-kubernetes-cluster/
+
+
+
+Note: Open Required Ports In AWS Security Groups. For now we will open All trafic.
+
+==========COMMON FOR MASTER & WORKERNODES START ====
+
+sudo su
+
+ sudo hostnamectl set-hostname master                //       sudo hostnamectl set-hostname agent  
+
+or 
+
+   hostname master     //   hostname agent
+
+exit
+
+sudo su
+
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y docker.io
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+sudo apt update
+sudo apt install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+sudo swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+	
+===========In Master ====================
+
+# Initialize Kubernates master by executing below commond.
+
+kubeadm init
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+In Master : kubectl get nodes
+
+#You will notice from the previous command, that all the pods are running except one: ‘core-dns’. For resolving this we will install a # pod network. To install the weave pod network, run the following command:
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+# kubectl apply -f https://docs.projectcalico.org/v3.19/manifests/calico.yaml
+
+
+#  kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+kubectl get nodes
+
+kubeadm token create --print-join-command
+
+Agent:
+execute above generated command
+==========================
+
+Deploy Sample Application
+
+     kubectl get nodes
+     kubectl run nginx-demo --image=nginx --port=80
+     kubectl get pods
+     kubectl expose pod nginx-demo --port=80 --type=NodePort
+     kubectl get svc	
+     kubectl delete pod/nginx-demo
+     kubectl delete svc/nginx-demo
+
