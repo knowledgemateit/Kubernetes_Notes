@@ -1,32 +1,121 @@
-kubectl create -f 1.pod1.yml
-kubectl get pods
-kubectl get pod ubuntu
-kubectl get pod ubuntu -o yaml
-kubectl logs ubuntu
-kubectl exec -it ubuntu sh
-kubectl delete pod/ubuntu
+Docker : 
+Single Host
+Manual scaling
+Package and run the container
+container dead
 
-kubectl create -f 2.replicaset.yml
-kubectl get rs
-kubectl describe rs nginx
-kubectl scale rs nginx --replicas=4
-kubectl delete rs nginx
+ECS - Elastic Container Service
 
-kubectl create -f 3.deployment.yml
-kubectl get deployment
-kubectl describe deployment/nginx-deployment 
-kubectl delete deployment nginx-deployment
-kubectl apply -f deployment.yml
-kubectl scale deployment nginx-deployment --replicas=4
+Kubernetes: Open source
 
-“At 04:05.”
+Cluster of Nodes
+Autoscaling
+Orachastration
+container replaces instally if dead
+
+POD - one or more containers
+
+K8s Architecure:
+Master :   
+          Kube-API Server
+		  etcd
+		  kube-Scheduler
+		  kube-controller
+		  cloud-controller
+Worker Nodes:
+           kubelet 
+		   kube-proxy - Network guard
+		   container-runtime - Docker
+		   POD's 
+		   
+		   
+		   
+Cluster:
+AWS EKS (Elastic Kubernetes Service)
+Azure AKS (Azure kubernetes Service)
+GCP GKE( google Kubernetes Engine)
+
+Servers  - Recommended
+
+Mini Kube (1 Node cluster)
+Rancher (1 node cluster)
+
+-------------------------------
+11 Objects:
+
+1.pods : used to deploy, scale, and manage containerized applications in a cluster.
+
+2.Deployment :  A Deployment allows you to declaratively manage the desired state of your application, such as the number of replicas, the image to use for the Pods, and the resources required.
  
-	5 			4 		*				* 				*
-minutes      hour 	day(month)       month             day(week)
+3.ReplicaSet : The ReplicaSet ensures that the desired number of replicas (copies) are running at all times by creating or deleting Pods as needed.
 
-kubectl create -f 4.cronjob.yml
-kubectl get cronjobs
-kubectl get cronjob hello
-kubectl get jobs --watch
-kubectl delete cronjob hello
+4.Namespace: way to divide a single Kubernetes cluster into multiple virtual clusters
 
+5.statefulset: used to manage stateful applications
+
+   The StatefulSet ensures that each Pod is uniquely identified by a number, starting at zero
+   
+6.DaemonSets: A DaemonSet ensures that a copy of a Pod is running across all
+
+7.PersistentVolume : Represents a piece of storage
+
+8.service : Way to expose the pod 
+
+       Node IP
+	   cluster Port
+	   Loadbalancer
+	   External name
+
+
+9-10 Config Maps & Secrets  
+     ConfigMaps are used to store non-sensitive configuration values
+	 Secrets, on the other hand, are meant to hold sensitive configuration values
+	 
+11.Jobs : Run specific tasks
+
+----------------------------------------------------------------------------
+POD's:
+
+kubectl get pods
+kubectl get ns
+kubectl run nginx-pod --image=nginx
+kubectl get pods
+kubectl get pods -o wide
+kubectl describe pod nginx-pod
+kubectl exec -it nginx-pod -- /bin/bash
+kubectl logs -f nginx-pod
+kubectl delete pod nginx-pod
+
+----------------------------------------------------------------------------
+Deployment:
+kubectl create deployment web-app --image=nginx --replicas=3
+deployment.apps/web-app created
+
+kubectl get deployment
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+web-app   3/3     3            3           9s
+
+kubectl get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-cfc5c9bdf-5zhnd   1/1     Running   0          29s
+web-app-cfc5c9bdf-nx8c2   1/1     Running   0          29s
+web-app-cfc5c9bdf-s9c89   1/1     Running   0          29s
+
+
+kubectl scale deployment web-app --replicas=5
+kubectl expose deployment web-app --type=NodePort --port=80
+kubectl get all -l app=web-app
+
+kubectl set image deployment/web-app nginx=nginx:1.25.1
+
+kubectl delete deployment web-app
+----------------------------------------------------------------------------
+Namespace:
+     kubectl create namespace prod
+     kubectl get ns
+     kubectl create deployment web-app --image=nginx --replicas=3 -n prod
+     kubectl get deployment -n prod
+     kubectl delete namespace prod
+	 
+	 kubectl config set-context --current --namespace=prod
+	 kubectl config get-contexts
