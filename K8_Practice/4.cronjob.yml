@@ -1,19 +1,15 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: hello
+  name: nightly-db-backup
 spec:
-  schedule: "5 4 * * *"
+  schedule: "0 0 * * *"   # Every night at 00:00 (Midnight)
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: hello
-            image: ubuntu
-            imagePullPolicy: IfNotPresent
-            command:
-            - /bin/sh
-            - -c
-            - date; echo Hello from the Kubernetes cluster
+          - name: backup-agent
+            image: busybox
+            command: ["/bin/sh", "-c", "echo 'Backing up Database... Done!'"]
           restartPolicy: OnFailure
