@@ -86,6 +86,20 @@ kubectl exec -it nginx-pod -- /bin/bash
 kubectl logs -f nginx-pod
 kubectl delete pod nginx-pod
 
+
+Common POD Errors:
+ImagePullBackoff/ErrImagePull:   unable the image
+
+CrashLoopBackoff : crashes the container 
+code error,missing , port
+
+Pending:
+Insuffient resources
+
+CreateContainerconfigerror:
+Secret or configmap
+
+
 ----------------------------------------------------------------------------
 Deployment:
 kubectl create deployment web-app --image=nginx --replicas=3
@@ -119,3 +133,72 @@ Namespace:
 	 
 	 kubectl config set-context --current --namespace=prod
 	 kubectl config get-contexts
+	 
+	------------------------------- 
+ReplicaSet : Number
+Deployment: streategy of release
+------------------------------- 
+Manifest files:
+
+kubectl apply -f 1.pod1.yml 
+kubectl delete -f 1.pod1.yml
+
+---------------------------------------
+kubectl apply -f 4.cronjob.yml
+kubectl get cronjobs
+kubectl get jobs
+
+kubectl create job manual-backup-test --from=cronjob/nightly-db-backup
+kubectl get jobs
+kubectl logs -l job-name=manual-backup-test 
+kubectl delete job manual-backup-test
+
+----------------------------------
+
+9-10 Config Maps & Secrets  
+     ConfigMaps are used to store non-sensitive configuration values
+	 Secrets, on the other hand, are meant to hold sensitive configuration values
+	 
+kubectl create configmap app-config --from-literal=APP_COLOR=pink --from-literal=LOG_LEVEL=debug
+kubectl apply -f config_map.yml 
+
+kubectl get pods
+kubectl get configmap app-config
+kubectl describe configmap app-config
+
+Secrets
+kubectl create secret generic db-pass --from-literal=password=Admin@123
+kubectl apply -f config_map_secret.yml 
+kubectl get secret db-pass
+kubectl describe secret db-pass
+----------------------------------------------------
+5.statefulset: used to manage stateful applications
+
+   The StatefulSet ensures that each Pod is uniquely identified by a number, starting at zero
+   
+   db1
+   db2
+   db3
+   
+   
+
+kubectl apply -f 6.statefulset.yml 
+kubectl get pods
+kubectl delete pods/mongodb-1
+kubectl get pods
+   
+   
+6.DaemonSets: A DaemonSet ensures that a copy of a Pod is running across all
+
+
+node1
+node2
+node3  - crashed
+node3
+
+node4
+
+
+kubectl get pods -l tier=monitoring -o wide
+NAME                         READY   STATUS    RESTARTS   AGE   IP                NODE   NOMINATED NODE   READINESS GATES
+prometheus-daemonset-7tswm   1/1     Running   0          72s   192.168.167.137   node   <none>           <none>
