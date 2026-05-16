@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-frontend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx-web
+        image: nginx:1.25
+        ports:
+        - containerPort: 80 # The port the Nginx container listens on inside the pod
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-frontend-svc
+spec:
+  type: NodePort
+  selector:
+    tier: frontend     # Matches the deployment pods
+  ports:
+    - port: 80         # ClusterIP Port: The port used inside the cluster
+      targetPort: 80   # Container Port: The port on the pod
+      nodePort: 31080  # External Port: Must be between 30000-32767 - If you omit this, K8s assigns a random one.
