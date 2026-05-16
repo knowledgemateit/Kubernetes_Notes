@@ -1,0 +1,17 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: ec2-private-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 172.31.23.224-172.31.23.250 # ⚠️ CHANGE THIS to an unused slice of your node's subnet
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: ec2-l2-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - ec2-private-pool
