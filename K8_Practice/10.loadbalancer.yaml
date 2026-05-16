@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: core-api
+  template:
+    metadata:
+      labels:
+        app: core-api
+    spec:
+      containers:
+      - name: api-container
+        image: nginx:1.25
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-public-svc
+  annotations:
+    # AWS-specific annotation to provision a high-performance Network Load Balancer (NLB)
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
+spec:
+  type: LoadBalancer
+  selector:
+    app: core-api
+  ports:
+    - protocol: TCP
+      port: 80         # The public port on the Cloud Load Balancer (e.g., http://public-ip:80)
+      targetPort: 80   # The internal port inside your container pods
