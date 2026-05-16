@@ -202,3 +202,77 @@ node4
 kubectl get pods -l tier=monitoring -o wide
 NAME                         READY   STATUS    RESTARTS   AGE   IP                NODE   NOMINATED NODE   READINESS GATES
 prometheus-daemonset-7tswm   1/1     Running   0          72s   192.168.167.137   node   <none>           <none>
+
+----------------------------------------------------
+
+Port :
+Master:
+6443  - apiserver
+2379-2380  - etcd
+10250  k8s api
+10259  - kube-Scheduler
+10260 - controller
+
+Node:
+10250 - kubelet
+30000-32767  - NodePort Services
+
+
+176  - calico
+8285 - Flannel
+8472  - cilium
+
+Grafana -3000
+
+
+kubectl version
+
+--------------------------------------------------------
+
+Service :
+Services provide a stable, permanent IP address (and DNS name) to ensure reliable communication
+
+ClusterIP:  Only accessiable inside the cluster. you cant acess from outside of internet
+   use case: DB,secure services
+
+kubectl apply -f 8.clusterip.yaml
+service/internal-db-svc created
+
+kubectl get svc
+NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+internal-db-svc   ClusterIP   10.100.20.252   <none>        3306/TCP   35s
+kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP    11m
+
+kubectl get endpoints internal-db-svc
+NAME              ENDPOINTS   AGE
+internal-db-svc   <none>      63s
+
+kubectl describe svc internal-db-svc
+
+kubectl run test-client --image=busybox -it --rm --restart=Never -- nc -zv internal-db-svc 3306
+
+
+NodePort: 30000–32767
+   A NodePort service is the simplest way to expose an application to external traffic
+   
+   
+   curl http://localhost:31080
+
+   netstat -an
+
+Loadbalancer:  Provisions an external load balancer (via a cloud provider like AWS/GCP).
+
+kubectl get svc
+NAME             TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+api-public-svc   LoadBalancer   10.96.145.38   <pending>     80:31712/TCP   31s
+
+kubectl get svc api-public-svc
+
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
+
+kubectl apply -f 11.metallb-config.yaml
+
+curl -I http://172.31.23.224:80 
+
+External Name:
+--------------------------------------------
