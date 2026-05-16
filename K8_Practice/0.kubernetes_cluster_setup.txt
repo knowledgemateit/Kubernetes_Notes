@@ -93,4 +93,68 @@ Deploy Sample Application
      kubectl get svc	
      kubectl delete pod/nginx-demo
      kubectl delete svc/nginx-demo
+--------------------------------------------
 
+-------------------------------------------------------------------------------------
+Grafana to NodePort
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+
+helm upgrade --install monitoring-grafana grafana/grafana \
+  --namespace monitoring
+
+kubectl get pods -n monitoring -w
+
+
+kubectl patch svc monitoring-grafana -n monitoring -p '{"spec": {"type": "NodePort"}}'
+
+# Get the Grafana Password
+kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+Username : admin
+
+
+--------------------------------------------------------------------------------------------------------------------------
+Dashboard:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+
+kubectl get pods -n kubernetes-dashboard -w
+
+Configure Admin RBAC Permissions
+By default, the UI installs with zero privileges. Paste this complete block into your terminal to provision a 
+dedicated admin ServiceAccount and a cluster-wide binding:
+
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+
+kubectl apply -f 11.metallb.yml
+
+kubectl get svc -n kubernetes-dashboard kubernetes-dashboard
+
+kubectl -n kubernetes-dashboard create token admin-user
+
+https://3.79.56.46:31569/
