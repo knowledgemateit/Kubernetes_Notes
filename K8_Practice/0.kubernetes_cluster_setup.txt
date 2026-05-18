@@ -151,10 +151,12 @@ subjects:
   namespace: kubernetes-dashboard
 EOF
 
-kubectl apply -f 11.metallb.yml
+kubectl apply -f 11.metallb-config.yaml
+
+kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
 
 kubectl get svc -n kubernetes-dashboard kubernetes-dashboard
 
 kubectl -n kubernetes-dashboard create token admin-user
 
-https://3.79.56.46:31569/
+https://masterip:31569/
