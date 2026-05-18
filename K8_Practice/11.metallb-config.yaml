@@ -5,7 +5,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 172.31.23.224-172.31.23.250 # ⚠️ CHANGE THIS to an unused slice of your node's subnet
+    - 172.31.9.244-172.31.9.250 # ⚠️ CHANGE THIS to an unused slice of your node's subnet
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
