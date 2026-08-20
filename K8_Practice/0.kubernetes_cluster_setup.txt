@@ -78,6 +78,8 @@ kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/
 
 kubectl get nodes
 
+kubectl label node agent node-role.kubernetes.io/worker=worker
+
 kubeadm token create --print-join-command
 
 ===========In Node ====================
@@ -88,6 +90,16 @@ Deploy Sample Application
 
      kubectl get nodes
      kubectl run nginx-demo --image=nginx --port=80
+        kubectl get pod nginx-demo -o wide
+		kubectl describe pod nginx-demo
+		kubectl get pod nginx-demo -o yaml
+		kubectl logs -f nginx-demo
+		kubectl exec -it nginx-demo -- /bin/bash
+		kubectl exec nginx-demo -- nginx -v
+		kubectl port-forward pod/nginx-demo 8080:80
+                ps aux | grep port-forward
+				kill <pid>
+
      kubectl get pods
      kubectl expose pod nginx-demo --port=80 --type=NodePort
      kubectl get svc	
