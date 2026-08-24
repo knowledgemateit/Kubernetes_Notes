@@ -140,11 +140,11 @@ Deployment: streategy of release
 ------------------------------- 
 Manifest files:
 
-kubectl apply -f 1.pod1.yml 
-kubectl delete -f 1.pod1.yml
+kubectl apply -f 01.pod1.yml 
+kubectl delete -f 01.pod1.yml
 
 ---------------------------------------
-kubectl apply -f 4.cronjob.yml
+kubectl apply -f 04.cronjob.yml
 kubectl get cronjobs
 kubectl get jobs
 
@@ -183,13 +183,13 @@ kubectl describe secret db-pass
    
 
 kubectl apply -f 6.statefulset.yml 
+get statefulsets -o wide
 kubectl get pods
 kubectl delete pods/mongodb-1
 kubectl get pods
    
    
 6.DaemonSets: A DaemonSet ensures that a copy of a Pod is running across all
-
 
 node1
 node2
@@ -198,34 +198,11 @@ node3
 
 node4
 
+kubectl apply -f 05.deamonset.yaml
 
 kubectl get pods -l tier=monitoring -o wide
 NAME                         READY   STATUS    RESTARTS   AGE   IP                NODE   NOMINATED NODE   READINESS GATES
 prometheus-daemonset-7tswm   1/1     Running   0          72s   192.168.167.137   node   <none>           <none>
-
-----------------------------------------------------
-
-Port :
-Master:
-6443  - apiserver
-2379-2380  - etcd
-10250  k8s api
-10259  - kube-Scheduler
-10260 - controller
-
-Node:
-10250 - kubelet
-30000-32767  - NodePort Services
-
-
-176  - calico
-8285 - Flannel
-8472  - cilium
-
-Grafana -3000
-
-
-kubectl version
 
 --------------------------------------------------------
 
@@ -276,3 +253,26 @@ curl -I http://172.31.23.224:80
 
 External Name:
 --------------------------------------------
+
+Port :
+Master:
+6443  - apiserver
+2379-2380  - etcd
+10250  k8s api
+10259  - kube-Scheduler
+10260 - controller
+
+Node:
+10250 - kubelet
+30000-32767  - NodePort Services
+
+
+176  - calico
+8285 - Flannel
+8472  - cilium
+
+Grafana -3000
+
+
+kubectl version
+
