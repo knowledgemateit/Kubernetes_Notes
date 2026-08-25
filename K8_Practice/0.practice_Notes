@@ -193,6 +193,7 @@ Services provide a stable, permanent IP address (and DNS name) to ensure reliabl
 
 ClusterIP:  Only accessiable inside the cluster. you cant acess from outside of internet
    use case: DB,secure services
+ 
 
 kubectl apply -f 8.clusterip.yaml
 service/internal-db-svc created
