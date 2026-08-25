@@ -27,9 +27,7 @@ Worker Nodes:
 		   kube-proxy - Network guard
 		   container-runtime - Docker
 		   POD's 
-		   
-		   
-		   
+		   	   
 Cluster:
 AWS EKS (Elastic Kubernetes Service)
 Azure AKS (Azure kubernetes Service)
@@ -85,21 +83,6 @@ kubectl describe pod nginx-pod
 kubectl exec -it nginx-pod -- /bin/bash
 kubectl logs -f nginx-pod
 kubectl delete pod nginx-pod
-
-
-Common POD Errors:
-ImagePullBackoff/ErrImagePull:   unable the image
-
-CrashLoopBackoff : crashes the container 
-code error,missing , port
-
-Pending:
-Insuffient resources
-
-CreateContainerconfigerror:
-Secret or configmap
-
-
 ----------------------------------------------------------------------------
 Deployment:
 kubectl create deployment web-app --image=nginx --replicas=3
@@ -134,11 +117,39 @@ Namespace:
 	 kubectl config set-context --current --namespace=prod
 	 kubectl config get-contexts
 	 
-	------------------------------- 
-ReplicaSet : Number
-Deployment: streategy of release
-------------------------------- 
-Manifest files:
+-------------------------------------------------------------- 
+
+5.statefulset: used to manage stateful applications
+
+   The StatefulSet ensures that each Pod is uniquely identified by a number, starting at zero
+   
+   db1
+   db2
+   db3
+
+kubectl apply -f 6.statefulset.yml 
+get statefulsets -o wide
+kubectl get pods
+kubectl delete pods/mongodb-1
+kubectl get pods
+-------------------------------
+   
+6.DaemonSets: A DaemonSet ensures that a copy of a Pod is running across all
+
+node1
+node2
+node3  - crashed
+node3
+
+node4
+
+kubectl apply -f 05.deamonset.yaml
+
+kubectl get pods -l tier=monitoring -o wide
+NAME                         READY   STATUS    RESTARTS   AGE   IP                NODE   NOMINATED NODE   READINESS GATES
+prometheus-daemonset-7tswm   1/1     Running   0          72s   192.168.167.137   node   <none>           <none>
+
+----------------------------------------------------------------------------
 
 kubectl apply -f 01.pod1.yml 
 kubectl delete -f 01.pod1.yml
@@ -171,40 +182,11 @@ kubectl create secret generic db-pass --from-literal=password=Admin@123
 kubectl apply -f config_map_secret.yml 
 kubectl get secret db-pass
 kubectl describe secret db-pass
+
+---------------------------------
+kubectl apply -f 13.local-storage-stack.yaml 
+kubectl get pv
 ----------------------------------------------------
-5.statefulset: used to manage stateful applications
-
-   The StatefulSet ensures that each Pod is uniquely identified by a number, starting at zero
-   
-   db1
-   db2
-   db3
-   
-   
-
-kubectl apply -f 6.statefulset.yml 
-get statefulsets -o wide
-kubectl get pods
-kubectl delete pods/mongodb-1
-kubectl get pods
-   
-   
-6.DaemonSets: A DaemonSet ensures that a copy of a Pod is running across all
-
-node1
-node2
-node3  - crashed
-node3
-
-node4
-
-kubectl apply -f 05.deamonset.yaml
-
-kubectl get pods -l tier=monitoring -o wide
-NAME                         READY   STATUS    RESTARTS   AGE   IP                NODE   NOMINATED NODE   READINESS GATES
-prometheus-daemonset-7tswm   1/1     Running   0          72s   192.168.167.137   node   <none>           <none>
-
---------------------------------------------------------
 
 Service :
 Services provide a stable, permanent IP address (and DNS name) to ensure reliable communication
@@ -272,6 +254,23 @@ Node:
 8472  - cilium
 
 Grafana -3000
+
+-------------------------------
+ReplicaSet : Number
+Deployment: streategy of release
+
+Common POD Errors:
+ImagePullBackoff/ErrImagePull:   unable the image
+
+CrashLoopBackoff : crashes the container 
+code error,missing , port
+
+Pending:
+Insuffient resources
+
+CreateContainerconfigerror:
+Secret or configmap
+------------------------------- 
 
 
 kubectl version
