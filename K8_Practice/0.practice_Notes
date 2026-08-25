@@ -59,10 +59,10 @@ Rancher (1 node cluster)
 
 8.service : Way to expose the pod 
 
-       Node IP
-	   cluster Port
-	   Loadbalancer
-	   External name
+       Node IP - (30000-32767)
+	   cluster Port  -  Default
+	   Loadbalancer - AWS ELB, GCP LB, Azure Load Balancer
+	   External name - my.database.com
 
 
 9-10 Config Maps & Secrets  
